@@ -4,17 +4,13 @@ from typing import Callable, Any
 def cache(func: Callable) -> Callable:
     check_dict = {}
     def wrapper(*args, **kwargs) -> Any:
-        if args in check_dict or kwargs.values() in check_dict:
+        key = (args, tuple(sorted(kwargs.items())))
+        if key in check_dict:
             print("Getting from cache")
-            return check_dict[args]
-        elif args not in check_dict:
-            print("Calculating new result")
-            result = func(*args, **kwargs)
-            check_dict[args] = result
-            return result
+            return check_dict[key]
         else:
             print("Calculating new result")
             result = func(*args, **kwargs)
-            check_dict[kwargs.values()] = result
+            check_dict[key] = result
             return result
     return wrapper
